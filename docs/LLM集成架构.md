@@ -8,7 +8,7 @@
 - 统一的流式输出接口
 - 错误处理和重试机制
 - 成本控制和监控
-- 基于 Vercel AI SDK 的标准化集成
+- 可选：对接 Vercel AI SDK 或自建 Provider 适配层
 
 ### 1.2 支持的 LLM Provider
 
@@ -23,7 +23,53 @@
 | 本地 Ollama | llama3, mistral | ✓ | ✗ |
 | 自定义 API | 兼容 OpenAI 格式 | ✓ | ✓ |
 
+### 1.3 运行时组件与数据流（任务化 + SSE）
+
+面向“AI IDE 逐行编写 + 多智能体协同 + 大量数据传递”，推荐把 AI 生成/分析等长耗时工作 **任务化**，并用 **SSE（Server-Sent Events）** 做流式输出通道：
+
+```
+┌──────────────┐      POST /ai/tasks       ┌──────────────┐     enqueue     ┌──────────────┐
+│  Web App      │ ───────────────────────▶ │  API Server   │ ──────────────▶ │   Worker      │
+│ (Next.js UI)  │ ◀─────────────────────── │ (Fastify)     │  subscribe      │ (LLM runtime) │
+└──────┬───────┘   GET /ai/tasks/:id/stream └──────┬───────┘  (Redis)        └──────┬───────┘
+       │                                           │                                 │
+       │                                           │ publish chunks/status            │
+       │                                           ▼                                 ▼
+       │                                   ┌──────────────┐                  ┌──────────────┐
+       │                                   │    Redis      │                  │  PostgreSQL   │
+       │                                   │ (queue+pubsub)│                  │ (tasks+result)│
+       │                                   └──────────────┘                  └──────────────┘
+```
+
+关键点：
+- 任务创建接口快速返回 `taskId`，避免单个请求长时间占用连接。
+- Worker 负责真正调用 LLM，并把增量输出（chunk/token）推到 Redis（Pub/Sub 或 Streams）。
+- API Server 通过 SSE 把增量输出转发给前端；最终结果写入 PostgreSQL（或对象存储），前端再按需拉取。
+
+### 1.4 SSE 事件协议（建议）
+
+
+SSE 采用 `text/event-stream`，每条消息用 `event:` + `data:`，`data` 统一为 JSON。
+
+事件类型建议（最小集合）：
+- `task.started`：任务进入执行态
+- `task.delta`：流式增量输出（文本片段/结构化 patch）
+- `task.usage`：token/费用统计（可选，完成时发送）
+- `task.completed`：任务完成，提供最终结果引用（resultId/resultUrl）
+- `task.failed`：任务失败，提供错误码与可展示信息
+
+`task.delta` 的 `data` 建议字段：
+- `taskId`: string
+- `seq`: number（递增序号，便于重放/断线续传）
+- `kind`: "text" | "json" | "patch"
+- `delta`: string | object
+
+断线续传建议：
+- 服务端为每个任务维护一个短期 event buffer（Redis Streams 或内存 + TTL）。
+- 客户端断线重连时携带 `Last-Event-ID`（或 query 中 `cursor`），服务端从 buffer 回放缺失事件。
+
 ---
+
 
 ## 2. 核心架构
 

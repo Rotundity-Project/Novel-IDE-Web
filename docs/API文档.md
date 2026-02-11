@@ -1,9 +1,12 @@
 # Novel-Studio-Web API 文档
 
+> 说明：当前仓库处于 Phase 1 骨架阶段，后端代码目前仅实现了健康检查与版本信息接口；本文件其余部分为规划稿，会随着实现逐步对齐。
+
 ## 1. API 概述
 
 ### 1.1 基础信息
-- **Base URL**: `https://api.novel-studio-web.com/api/v1`
+- **Base URL（本地开发）**: `http://localhost:3001/api/v1`
+- **Base URL（生产示例）**: `https://api.novel-studio-web.com/api/v1`
 - **认证方式**: JWT Bearer Token
 - **数据格式**: JSON
 - **字符编码**: UTF-8
@@ -70,6 +73,14 @@ Accept-Language: zh-CN
 | `AI_002` | 上下文超长 |
 | `RATE_LIMIT_001` | 请求过于频繁 |
 | `VALIDATION_001` | 参数验证失败 |
+
+### 1.6 AI 流式任务模型（规划）
+
+为适配“大量数据传递/长耗时生成”，推荐采用“任务化 + SSE”：
+- `POST /ai/tasks`：创建任务，立即返回 `taskId`
+- `GET /ai/tasks/{taskId}/stream`：SSE 流式输出（`task.delta/task.completed/task.failed` 等事件）
+- `GET /ai/tasks/{taskId}`：获取最终状态与结果引用（避免超大响应体）
+- `POST /ai/tasks/{taskId}/cancel`：取消任务（配合幂等 key 避免重复生成）
 
 ---
 

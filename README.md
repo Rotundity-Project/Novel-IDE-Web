@@ -5,7 +5,7 @@
 ## 当前状态
 
 仓库已从纯文档阶段进入 **Phase 1 可部署框架**：
-- `app/`: Next.js (App Router) + TypeScript
+- `app/`: Next.js (App Router) + TypeScript（Next.js 16）
 - `server/`: Fastify + TypeScript
 - `docker/docker-compose.yml`: PostgreSQL + Redis + app + server 一键编排
 - `server/drizzle/`: Drizzle ORM 初始 schema
@@ -23,7 +23,7 @@ Novel-Studio-Web/
 
 ## 本地开发
 
-1. 安装依赖（建议 Node.js 20 + pnpm）
+1. 安装依赖（建议 Node.js 20.9+ + pnpm）
 
 ```bash
 pnpm install

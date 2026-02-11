@@ -1,9 +1,9 @@
-# Novel-IDE-Web API 文档
+# Novel-Studio-Web API 文档
 
 ## 1. API 概述
 
 ### 1.1 基础信息
-- **Base URL**: `https://api.novel-ide-web.com/api/v1`
+- **Base URL**: `https://api.novel-studio-web.com/api/v1`
 - **认证方式**: JWT Bearer Token
 - **数据格式**: JSON
 - **字符编码**: UTF-8
@@ -916,7 +916,7 @@ Accept-Language: zh-CN
 {
   "success": true,
   "data": {
-    "shareUrl": "https://novel-ide-web.com/agents/uuid",
+    "shareUrl": "https://novel-studio-web.com/agents/uuid",
     "shareCode": "ABC123"
   }
 }
@@ -1020,7 +1020,7 @@ Accept-Language: zh-CN
 
 ### 11.1 连接
 ```
-wss://api.novel-ide-web.com/ws
+wss://api.novel-studio-web.com/ws
 ```
 
 **连接参数**

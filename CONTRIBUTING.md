@@ -1,6 +1,6 @@
-# Novel-IDE-Web 贡献指南
+# Novel-Studio-Web 贡献指南
 
-感谢你对 Novel-IDE-Web 的关注！我们欢迎任何形式的贡献。
+感谢你对 Novel-Studio-Web 的关注！我们欢迎任何形式的贡献。
 
 ## 1. 如何贡献
 
@@ -63,13 +63,13 @@ Bug 报告应包含：
 
 2. **克隆你的 Fork**
    ```bash
-   git clone https://github.com/your-username/Novel-IDE-Web.git
-   cd Novel-IDE-Web
+   git clone https://github.com/your-username/Novel-Studio-Web.git
+   cd Novel-Studio-Web
    ```
 
 3. **添加上游仓库**
    ```bash
-   git remote add upstream https://github.com/original-owner/Novel-IDE-Web.git
+   git remote add upstream https://github.com/original-owner/Novel-Studio-Web.git
    ```
 
 4. **创建新分支**
@@ -286,8 +286,8 @@ pnpm test:coverage
 ## 6. 获取帮助
 
 - 📖 [文档](docs/)
-- 🐛 [Issue Tracker](https://github.com/your-username/Novel-IDE-Web/issues)
-- 💬 [Discussions](https://github.com/your-username/Novel-IDE-Web/discussions)
+- 🐛 [Issue Tracker](https://github.com/your-username/Novel-Studio-Web/issues)
+- 💬 [Discussions](https://github.com/your-username/Novel-Studio-Web/discussions)
 
 ## 7. 许可证
 

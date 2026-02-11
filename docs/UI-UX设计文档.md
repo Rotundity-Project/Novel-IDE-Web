@@ -1,4 +1,4 @@
-# Novel-IDE-Web UI/UX 设计文档
+# Novel-Studio-Web UI/UX 设计文档
 
 ## 1. 设计概述
 

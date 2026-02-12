@@ -1,6 +1,6 @@
-# Novel-Studio-Web 贡献指南
+# Novel-IDE-Web 贡献指南
 
-感谢你对 Novel-Studio-Web 的关注！我们欢迎任何形式的贡献。
+感谢你对 Novel-IDE-Web 的关注！我们欢迎任何形式的贡献。
 
 ## 1. 如何贡献
 
@@ -63,13 +63,13 @@ Bug 报告应包含：
 
 2. **克隆你的 Fork**
    ```bash
-   git clone https://github.com/your-username/Novel-Studio-Web.git
-   cd Novel-Studio-Web
+   git clone https://github.com/your-username/Novel-IDE-Web.git
+   cd Novel-IDE-Web
    ```
 
 3. **添加上游仓库**
    ```bash
-   git remote add upstream https://github.com/original-owner/Novel-Studio-Web.git
+   git remote add upstream https://github.com/original-owner/Novel-IDE-Web.git
    ```
 
 4. **创建新分支**
@@ -77,32 +77,39 @@ Bug 报告应包含：
    git checkout -b feature/your-feature-name
    ```
 
-5. **进行开发**
-   ```bash
-   # 前端开发
-   cd client && pnpm install && pnpm dev
+5. **先写规格（Spec-Kit）**
+   - 在 `docs/specs/` 新增或更新对应 spec（可从 `docs/spec-kit/templates/feature-spec.md` 复制）
+   - spec 至少包含：目标/约束/验收标准/验证方式
 
-   # 后端开发
-   cd server && pnpm install && pnpm dev
+6. **进行开发**
+   ```bash
+   pnpm install
+
+   # 默认：只启动 Next（同源 /api/v1）
+   pnpm dev:app
+
+   # 可选：仅当需要复杂能力服务时启动 Nest 后端
+   pnpm dev:server
    ```
 
-6. **提交更改**
+7. **提交更改**
    ```bash
    git add .
    git commit -m "feat: 添加新功能描述"
    ```
 
-7. **推送到你的 Fork**
+8. **推送到你的 Fork**
    ```bash
    git push origin feature/your-feature-name
    ```
 
-8. **创建 Pull Request**
+9. **创建 Pull Request**
    - 在 GitHub 上创建 Pull Request
    - 填写 PR 模板
+   - 必须在 PR 描述中链接对应 spec（`docs/specs/...`）
    - 等待代码审查
 
-9. **同步上游更新**
+10. **同步上游更新**
    ```bash
    git fetch upstream
    git checkout main
@@ -163,22 +170,15 @@ Closes #123
 
 ### 2.1 前置要求
 
-- Node.js >= 18
-- pnpm >= 8
+- Node.js >= 20
+- pnpm >= 9
 - PostgreSQL >= 15
 - Redis >= 7
 
 ### 2.2 安装依赖
 
 ```bash
-# 安装根依赖
 pnpm install
-
-# 安装前端依赖
-cd client && pnpm install
-
-# 安装后端依赖
-cd server && pnpm install
 ```
 
 ### 2.3 配置环境变量
@@ -186,62 +186,38 @@ cd server && pnpm install
 ```bash
 # 复制环境变量模板
 cp server/.env.example server/.env
-cp client/.env.example client/.env
+cp app/.env.example app/.env.local
 
 # 编辑配置
 vim server/.env
-vim client/.env
+vim app/.env.local
 ```
 
 ### 2.4 数据库初始化
 
 ```bash
-cd server
-pnpm prisma migrate dev
-pnpm prisma db seed
+pnpm --filter server db:migrate
 ```
 
 ### 2.5 启动开发服务器
 
 ```bash
-# 启动后端（终端 1）
-cd server && pnpm dev
-
-# 启动前端（终端 2）
-cd client && pnpm dev
+# 默认：只启动 Next（同源 /api/v1）
+pnpm dev:app
 ```
 
 ## 3. 运行测试
 
-### 3.1 前端测试
+### 3.1 当前可用的验证命令（Implemented）
 
 ```bash
-cd client
-
-# 单元测试
-pnpm test
-
-# 测试覆盖率
-pnpm test:coverage
-
-# E2E 测试
-pnpm test:e2e
+pnpm typecheck
+pnpm smoke:next-api
+pnpm build
 ```
 
-### 3.2 后端测试
-
-```bash
-cd server
-
-# 单元测试
-pnpm test
-
-# 集成测试
-pnpm test:integration
-
-# 测试覆盖率
-pnpm test:coverage
-```
+### 3.2 测试规划（Planned）
+- 单元测试/集成测试/e2e 将按 `docs/specs/**` 的验收标准逐步补齐。
 
 ## 4. 代码审查
 
@@ -286,8 +262,8 @@ pnpm test:coverage
 ## 6. 获取帮助
 
 - 📖 [文档](docs/)
-- 🐛 [Issue Tracker](https://github.com/your-username/Novel-Studio-Web/issues)
-- 💬 [Discussions](https://github.com/your-username/Novel-Studio-Web/discussions)
+- 🐛 [Issue Tracker](https://github.com/your-username/Novel-IDE-Web/issues)
+- 💬 [Discussions](https://github.com/your-username/Novel-IDE-Web/discussions)
 
 ## 7. 许可证
 

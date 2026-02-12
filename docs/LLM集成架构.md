@@ -1,4 +1,4 @@
-# Novel-Studio-Web LLM 集成架构设计文档
+# Novel-IDE-Web LLM 集成架构设计文档
 
 ## 1. 架构概述
 

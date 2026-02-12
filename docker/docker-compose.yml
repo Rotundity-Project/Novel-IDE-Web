@@ -30,11 +30,25 @@ services:
       timeout: 3s
       retries: 5
 
+  migrate:
+    build:
+      context: ..
+      dockerfile: docker/server.Dockerfile
+    restart: "no"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-novel}:${POSTGRES_PASSWORD:-novel_dev_password}@postgres:5432/${POSTGRES_DB:-novel_ide_web}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["pnpm", "db:migrate"]
+
   server:
     build:
       context: ..
       dockerfile: docker/server.Dockerfile
     restart: unless-stopped
+    profiles: ["complex"]
     environment:
       NODE_ENV: ${NODE_ENV:-production}
       HOST: 0.0.0.0
@@ -56,9 +70,19 @@ services:
     restart: unless-stopped
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_API_BASE_URL: http://localhost:${SERVER_PORT:-3001}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-novel}:${POSTGRES_PASSWORD:-novel_dev_password}@postgres:5432/${POSTGRES_DB:-novel_ide_web}
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev_jwt_access_secret_change_me}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev_jwt_refresh_secret_change_me}
+      ACCESS_TOKEN_TTL: ${ACCESS_TOKEN_TTL:-7200}
+      REFRESH_TOKEN_TTL: ${REFRESH_TOKEN_TTL:-2592000}
     depends_on:
-      - server
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     ports:
       - "${APP_PORT:-3000}:3000"
 

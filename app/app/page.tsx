@@ -1,15 +1,21 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { getAccessToken } from "../src/lib/auth";
+
 export default function HomePage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = getAccessToken();
+    router.replace(token ? "/works" : "/login");
+  }, [router]);
+
   return (
-    <main className="home">
-      <section className="panel">
-        <h1>Novel Studio Web</h1>
-        <p>Phase 1 deployable framework is ready.</p>
-        <ul>
-          <li>Frontend: Next.js App Router + TypeScript</li>
-          <li>Backend: Fastify + TypeScript</li>
-          <li>Data: PostgreSQL + Redis via Docker Compose</li>
-        </ul>
-      </section>
+    <main className="panel" style={{ maxWidth: 520, margin: "40px auto" }}>
+      <h1>Novel-IDE-Web</h1>
+      <p>跳转中...</p>
     </main>
   );
 }

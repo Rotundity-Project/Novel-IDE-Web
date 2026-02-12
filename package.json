@@ -1,13 +1,16 @@
 {
-  "name": "novel-studio-web",
+  "name": "novel-ide-web",
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@9.15.0",
   "scripts": {
-    "dev:app": "pnpm --filter app dev",
-    "dev:server": "pnpm --filter server dev",
-    "build": "pnpm --filter app build && pnpm --filter server build",
-    "typecheck": "pnpm --filter app typecheck && pnpm --filter server typecheck",
+    "dev:app": "pnpm --filter @novel/server-core build && pnpm --filter app dev",
+    "dev:server": "pnpm --filter @novel/server-core build && pnpm --filter server dev",
+    "sync:meta": "node scripts/sync-project-meta.mjs",
+    "build": "pnpm --filter @novel/server-core build && pnpm --filter app build && pnpm --filter server build",
+    "typecheck": "pnpm --filter @novel/server-core build && pnpm --filter app typecheck && pnpm --filter server typecheck",
+    "smoke:next-api": "node scripts/smoke-next-api.mjs",
+    "docs:check-api": "node scripts/docs-check-api.mjs",
     "docker:up": "docker compose -f docker/docker-compose.yml up --build -d",
     "docker:down": "docker compose -f docker/docker-compose.yml down"
   }

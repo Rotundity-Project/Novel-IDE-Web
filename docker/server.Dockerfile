@@ -3,6 +3,7 @@ WORKDIR /workspace
 RUN corepack enable
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY server/package.json ./server/package.json
+COPY packages/server-core/package.json ./packages/server-core/package.json
 RUN pnpm install --filter server...
 
 FROM node:20-alpine AS builder
@@ -11,6 +12,7 @@ RUN corepack enable
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY --from=deps /workspace/server/node_modules ./server/node_modules
 COPY . .
+RUN pnpm --filter @novel/server-core build
 RUN pnpm --filter server build
 
 FROM node:20-alpine AS runner
@@ -20,7 +22,9 @@ RUN corepack enable
 COPY --from=builder /workspace/server/dist ./dist
 COPY --from=builder /workspace/server/drizzle ./drizzle
 COPY --from=builder /workspace/server/package.json ./package.json
+COPY --from=builder /workspace/packages/server-core/dist /workspace/packages/server-core/dist
+COPY --from=builder /workspace/packages/server-core/package.json /workspace/packages/server-core/package.json
 COPY --from=deps /workspace/node_modules /workspace/node_modules
 COPY --from=deps /workspace/server/node_modules ./node_modules
 EXPOSE 3001
-CMD ["node", "dist/server.js"]
+CMD ["node", "dist/main.js"]

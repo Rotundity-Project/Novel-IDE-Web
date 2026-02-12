@@ -3,6 +3,7 @@ WORKDIR /workspace
 RUN corepack enable
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 COPY app/package.json ./app/package.json
+COPY packages/server-core/package.json ./packages/server-core/package.json
 RUN pnpm install --filter app...
 
 FROM node:20-alpine AS builder
@@ -11,6 +12,7 @@ RUN corepack enable
 COPY --from=deps /workspace/node_modules ./node_modules
 COPY --from=deps /workspace/app/node_modules ./app/node_modules
 COPY . .
+RUN pnpm --filter @novel/server-core build
 RUN pnpm --filter app build
 
 FROM node:20-alpine AS runner
@@ -21,6 +23,8 @@ COPY --from=builder /workspace/app/.next ./.next
 COPY --from=builder /workspace/app/public ./public
 COPY --from=builder /workspace/app/package.json ./package.json
 COPY --from=builder /workspace/app/next.config.mjs ./next.config.mjs
+COPY --from=builder /workspace/packages/server-core/dist /workspace/packages/server-core/dist
+COPY --from=builder /workspace/packages/server-core/package.json /workspace/packages/server-core/package.json
 COPY --from=deps /workspace/node_modules /workspace/node_modules
 COPY --from=deps /workspace/app/node_modules ./node_modules
 EXPOSE 3000

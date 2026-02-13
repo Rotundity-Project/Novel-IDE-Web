@@ -9,9 +9,21 @@
     "sync:meta": "node scripts/sync-project-meta.mjs",
     "build": "pnpm --filter @novel/server-core build && pnpm --filter app build && pnpm --filter server build",
     "typecheck": "pnpm --filter @novel/server-core build && pnpm --filter app typecheck && pnpm --filter server typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "smoke:next-api": "node scripts/smoke-next-api.mjs",
     "docs:check-api": "node scripts/docs-check-api.mjs",
     "docker:up": "docker compose -f docker/docker-compose.yml up --build -d",
     "docker:down": "docker compose -f docker/docker-compose.yml down"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@next/eslint-plugin-next": "^16.1.6",
+    "@typescript-eslint/eslint-plugin": "^8.20.0",
+    "@typescript-eslint/parser": "^8.20.0",
+    "eslint": "^9.18.0",
+    "eslint-plugin-react": "^7.37.0",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^16.0.0"
   }
 }
